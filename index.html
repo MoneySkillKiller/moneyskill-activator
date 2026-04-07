@@ -3,71 +3,90 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MoneySkill Bot Activator</title>
+    <title>MoneySkill Bot - Get Your Personal Bot</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <style>
-        body { font-family: Arial, sans-serif; max-width: 600px; margin: 40px auto; padding: 20px; }
-        h1 { color: #333; }
-        input { width: 100%; padding: 10px; margin: 10px 0; }
-        button { padding: 12px 20px; background: #007bff; color: white; border: none; cursor: pointer; }
-        button:hover { background: #0056b3; }
-        .result { margin-top: 20px; padding: 15px; background: #f0f0f0; }
+        body { font-family: Arial, sans-serif; max-width: 700px; margin: 50px auto; padding: 20px; text-align: center; }
+        h1 { color: #1a73e8; }
+        input { width: 100%; padding: 15px; margin: 10px 0; font-size: 16px; }
+        button { padding: 18px 40px; font-size: 20px; background: #1a73e8; color: white; border: none; border-radius: 8px; cursor: pointer; margin-top: 20px; }
+        button:hover { background: #0d5fd1; }
+        .result { margin-top: 30px; padding: 20px; background: #f0f0f0; border-radius: 8px; }
     </style>
 </head>
 <body>
-    <h1>MoneySkill Bot Activator</h1>
-    <p>After paying via Cash App, enter your MoneySKILL details below to get your personalized bot.</p>
-    
-    <label>MoneySKILL Username:</label>
-    <input type="text" id="username" placeholder="s8354784">
-    
-    <label>MoneySKILL Password:</label>
-    <input type="password" id="password" placeholder="School26">
-    
-    <label>DeepSeek API Key (optional - leave default if using yours):</label>
-    <input type="text" id="deepseek" value="sk-9c74f97a7ed84ba5a0c08774c15bfab6">
-    
-    <button onclick="generateDownload()">Generate & Download My Bot</button>
-    
+    <h1>💰 MoneySkill Bot Activator</h1>
+    <p>After you pay via Cash App, enter your details below.<br>Click the button and get your ready-to-run bot instantly.</p>
+
+    <label>MoneySKILL Username</label>
+    <input type="text" id="username" placeholder="s8354784" required>
+
+    <label>MoneySKILL Password</label>
+    <input type="password" id="password" placeholder="School26" required>
+
+    <button onclick="generatePersonalizedZip()">📥 Download My Personalized Bot ZIP</button>
+
     <div id="result" class="result" style="display:none;"></div>
 
     <script>
-        function generateDownload() {
+        async function generatePersonalizedZip() {
             const username = document.getElementById('username').value.trim();
             const password = document.getElementById('password').value.trim();
-            const deepseek = document.getElementById('deepseek').value.trim();
-            
+
             if (!username || !password) {
-                alert("Please enter username and password");
+                alert("Please enter both username and password");
                 return;
             }
-            
-            const config = {
-                username: username,
-                password: password,
-                deepseek_key: deepseek,
-                machine_fingerprint: "CLIENT_SIDE_LOCK"  // Will be checked against real fingerprint when running
-            };
-            
-            const configStr = JSON.stringify(config, null, 2);
-            const blob = new Blob([configStr], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'config.lic';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-            
-            document.getElementById('result').innerHTML = `
-                <strong>Download started!</strong><br>
-                1. Download your config.lic file.<br>
-                2. Put it in the same folder as MoneySkillBot.exe (from the dist folder you built).<br>
-                3. Double-click MoneySkillBot.exe to run.<br><br>
-                <strong>Important:</strong> This bot is locked to your computer only.
-            `;
-            document.getElementById('result').style.display = 'block';
+
+            const resultDiv = document.getElementById('result');
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = `<strong>⏳ Preparing your bot... (this may take 10-20 seconds)</strong>`;
+
+            try {
+                // 1. Download your base .exe from GitHub
+                const exeResponse = await fetch('https://github.com/YOUR_GITHUB_USERNAME/moneyskill-activator/raw/main/MoneySkillBot.exe');
+                const exeBlob = await exeResponse.blob();
+
+                // 2. Create personalized config
+                const config = {
+                    username: username,
+                    password: password,
+                    deepseek_key: "sk-9c74f97a7ed84ba5a0c08774c15bfab6",
+                    machine_fingerprint: "CLIENT_LOCK"
+                };
+
+                const configStr = JSON.stringify(config, null, 2);
+                const configBlob = new Blob([configStr], { type: 'application/json' });
+
+                // 3. Create ZIP with JSZip
+                const zip = new JSZip();
+                zip.file("MoneySkillBot.exe", exeBlob);
+                zip.file("config.lic", configBlob);
+                zip.file("README.txt", "1. Extract this zip\n2. Double-click MoneySkillBot.exe\n\nYour bot is locked to this computer only.");
+
+                // 4. Generate and download
+                const zipBlob = await zip.generateAsync({ type: "blob" });
+                const url = URL.createObjectURL(zipBlob);
+
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = "My_MoneySkillBot.zip";
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+
+                resultDiv.innerHTML = `
+                    <strong>✅ Download started!</strong><br><br>
+                    Your personalized bot ZIP is downloading.<br>
+                    Just unzip it and double-click <strong>MoneySkillBot.exe</strong>.<br><br>
+                    The bot is locked to your computer — it won’t work if shared.
+                `;
+
+            } catch (err) {
+                resultDiv.innerHTML = `❌ Something went wrong. Make sure the .exe is uploaded to the repo.`;
+                console.error(err);
+            }
         }
     </script>
 </body>
