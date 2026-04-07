@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MoneySkill Bot Activator</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 600px; margin: 40px auto; padding: 20px; }
+        h1 { color: #333; }
+        input { width: 100%; padding: 10px; margin: 10px 0; }
+        button { padding: 12px 20px; background: #007bff; color: white; border: none; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        .result { margin-top: 20px; padding: 15px; background: #f0f0f0; }
+    </style>
+</head>
+<body>
+    <h1>MoneySkill Bot Activator</h1>
+    <p>After paying via Cash App, enter your MoneySKILL details below to get your personalized bot.</p>
+    
+    <label>MoneySKILL Username:</label>
+    <input type="text" id="username" placeholder="s8354784">
+    
+    <label>MoneySKILL Password:</label>
+    <input type="password" id="password" placeholder="School26">
+    
+    <label>DeepSeek API Key (optional - leave default if using yours):</label>
+    <input type="text" id="deepseek" value="sk-9c74f97a7ed84ba5a0c08774c15bfab6">
+    
+    <button onclick="generateDownload()">Generate & Download My Bot</button>
+    
+    <div id="result" class="result" style="display:none;"></div>
+
+    <script>
+        function generateDownload() {
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value.trim();
+            const deepseek = document.getElementById('deepseek').value.trim();
+            
+            if (!username || !password) {
+                alert("Please enter username and password");
+                return;
+            }
+            
+            const config = {
+                username: username,
+                password: password,
+                deepseek_key: deepseek,
+                machine_fingerprint: "CLIENT_SIDE_LOCK"  // Will be checked against real fingerprint when running
+            };
+            
+            const configStr = JSON.stringify(config, null, 2);
+            const blob = new Blob([configStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'config.lic';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            document.getElementById('result').innerHTML = `
+                <strong>Download started!</strong><br>
+                1. Download your config.lic file.<br>
+                2. Put it in the same folder as MoneySkillBot.exe (from the dist folder you built).<br>
+                3. Double-click MoneySkillBot.exe to run.<br><br>
+                <strong>Important:</strong> This bot is locked to your computer only.
+            `;
+            document.getElementById('result').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
