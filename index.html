@@ -9,12 +9,25 @@
     <style>
         body { background: linear-gradient(135deg, #0f172a, #1e2937); }
         .card { background: white; box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25); }
+        video { width: 100%; border-radius: 16px; margin-top: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
     </style>
 </head>
 <body class="min-h-screen flex items-center justify-center text-gray-800">
     <div class="max-w-lg w-full mx-auto p-6">
         <div class="card rounded-3xl p-8">
-            
+
+            <!-- DEMO VIDEO -->
+            <video controls autoplay muted loop playsinline>
+                <source src="demo.mp4" type="video/mp4">
+                Your browser does not support the video.
+            </video>
+
+            <!-- WARNING -->
+            <div class="bg-red-100 border border-red-400 text-red-700 text-center py-4 rounded-2xl mt-6 mb-8 font-bold text-lg">
+                ⚠️ DOES NOT WORK ON SCHOOL ISSUED CHROMEBOOKS<br>
+                Will work in background • Simulates human behavior • Is NOT instant
+            </div>
+
             <!-- PAYMENT HEADER -->
             <div class="bg-green-100 text-green-800 text-center py-4 rounded-2xl mb-8 font-semibold flex items-center justify-center gap-2">
                 <i class="fas fa-dollar-sign"></i>
@@ -25,13 +38,21 @@
                 <div class="inline-flex items-center gap-3 text-4xl mb-4">
                     💰 <span class="font-bold text-3xl tracking-tight">MoneySkill Bot</span>
                 </div>
-                <p class="text-gray-500">After payment, get your personal bot instantly</p>
+                <p class="text-gray-500">Watch the demo • Pay • Get your bot instantly</p>
             </div>
 
-            <div class="bg-gray-50 p-5 rounded-2xl mb-6">
-                <p class="font-medium text-sm mb-2">Send payment to:</p>
-                <p class="text-3xl font-bold text-green-600">$cacabazuzu</p>
-                <p class="text-xs text-gray-500 mt-1">Include your MoneySKILL username in the note</p>
+            <!-- HOW TO BUY & USE (clear instructions) -->
+            <div class="bg-gray-50 p-6 rounded-2xl mb-8 text-left text-sm">
+                <h3 class="font-bold mb-3">✅ How to get your bot:</h3>
+                <ol class="list-decimal list-inside space-y-2">
+                    <li>Send <strong>$10</strong> on Cash App to <strong>$cacabazuzu</strong></li>
+                    <li>Put your MoneySKILL username in the note</li>
+                    <li>Come back to this page</li>
+                    <li>Enter your username + password</li>
+                    <li>Paste your Cash App note/transaction ID</li>
+                    <li>Click the big green button</li>
+                    <li>Download the ZIP, unzip it, and double-click <strong>MoneySkillBot.exe</strong></li>
+                </ol>
             </div>
 
             <div class="space-y-6">
@@ -45,24 +66,22 @@
                     <input type="password" id="password" class="w-full px-5 py-4 text-lg border border-gray-300 rounded-2xl" placeholder="School26" required>
                 </div>
 
-                <!-- PAYMENT PROOF STEP -->
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Cash App Transaction ID or Note</label>
-                    <input type="text" id="proof" class="w-full px-5 py-4 text-lg border border-gray-300 rounded-2xl" placeholder="Type the transaction ID or the note you sent" required>
-                    <p class="text-xs text-gray-500 mt-1">This proves you paid • We can check it</p>
+                    <input type="text" id="proof" class="w-full px-5 py-4 text-lg border border-gray-300 rounded-2xl" placeholder="Paste the note or transaction ID here" required>
                 </div>
 
-                <button onclick="checkPaymentAndGenerate()"
+                <button onclick="checkPaymentAndGenerate()" 
                         class="w-full bg-green-600 hover:bg-green-700 transition-all text-white font-semibold text-xl py-5 rounded-2xl flex items-center justify-center gap-3 shadow-lg">
                     <i class="fas fa-download"></i>
-                    CONFIRM PAYMENT & DOWNLOAD BOT
+                    CONFIRM PAYMENT &amp; DOWNLOAD BOT
                 </button>
             </div>
 
             <div id="result" class="hidden mt-6 p-6 bg-green-50 border border-green-200 rounded-2xl text-green-800"></div>
 
             <div class="text-center text-xs text-gray-400 mt-8">
-                🔒 Your bot is locked to your computer only • Cannot be shared
+                🔒 Bot is locked to your computer only • Cannot be shared
             </div>
         </div>
     </div>
@@ -75,13 +94,13 @@
             const proof = document.getElementById('proof').value.trim();
 
             if (!username || !password || !proof) {
-                alert("Please fill in username, password, AND your Cash App transaction ID");
+                alert("Please fill in ALL fields");
                 return;
             }
 
             const resultDiv = document.getElementById('result');
             resultDiv.classList.remove('hidden');
-            resultDiv.innerHTML = `<div class="flex items-center gap-3"><i class="fas fa-spinner fa-spin"></i><strong>Preparing your personal bot...</strong></div>`;
+            resultDiv.innerHTML = `<div class="flex items-center gap-3"><i class="fas fa-spinner fa-spin"></i><strong>Preparing your personal bot... (10-20 seconds)</strong></div>`;
 
             try {
                 const exeResponse = await fetch('https://github.com/leifberger2008-stack/moneyskill-activator/releases/download/v1.0/MoneySkillBot.exe');
@@ -108,16 +127,9 @@
                 a.click();
                 URL.revokeObjectURL(url);
 
-                resultDiv.innerHTML = `
-                    <div class="text-center">
-                        <i class="fas fa-check-circle text-5xl text-green-500 mb-4"></i>
-                        <strong class="text-2xl block">✅ Your bot is downloading!</strong>
-                        <p class="mt-2">Unzip and double-click <span class="font-mono font-bold">MoneySkillBot.exe</span></p>
-                    </div>
-                `;
-
+                resultDiv.innerHTML = `<div class="text-center"><i class="fas fa-check-circle text-5xl text-green-500 mb-4"></i><strong class="text-2xl block">✅ Your bot is downloading!</strong><p class="mt-2">Unzip and double-click MoneySkillBot.exe</p></div>`;
             } catch (err) {
-                resultDiv.innerHTML = `<span class="text-red-600">❌ Error: Make sure the .exe is in the v1.0 release.</span>`;
+                resultDiv.innerHTML = `<span class="text-red-600">❌ Make sure MoneySkillBot.exe is in the v1.0 release.</span>`;
             }
         }
     </script>
