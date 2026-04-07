@@ -3,52 +3,79 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MoneySkill Bot - Get Your Personal Bot</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <title>MoneySkill Bot • Instant Access</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        body { font-family: Arial, sans-serif; max-width: 700px; margin: 50px auto; padding: 20px; text-align: center; }
-        h1 { color: #1a73e8; }
-        input { width: 100%; padding: 15px; margin: 10px 0; font-size: 16px; }
-        button { padding: 18px 40px; font-size: 20px; background: #1a73e8; color: white; border: none; border-radius: 8px; cursor: pointer; margin-top: 20px; }
-        button:hover { background: #0d5fd1; }
-        .result { margin-top: 30px; padding: 20px; background: #f0f0f0; border-radius: 8px; }
+        body { background: linear-gradient(135deg, #0f172a, #1e2937); }
+        .card { background: white; box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25); }
     </style>
 </head>
-<body>
-    <h1>💰 MoneySkill Bot Activator</h1>
-    <p>After you pay via Cash App, enter your details below.<br>Click the button and get your ready-to-run bot instantly.</p>
+<body class="min-h-screen flex items-center justify-center text-gray-800">
+    <div class="max-w-lg w-full mx-auto p-6">
+        <div class="card rounded-3xl p-8">
+            <div class="text-center mb-8">
+                <div class="inline-flex items-center gap-3 text-4xl mb-4">
+                    💰 <span class="font-bold text-3xl tracking-tight">MoneySkill Bot</span>
+                </div>
+                <p class="text-gray-500">Get your personal bot in 10 seconds</p>
+            </div>
 
-    <label>MoneySKILL Username</label>
-    <input type="text" id="username" placeholder="s8354784" required>
+            <div class="space-y-6">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">MoneySKILL Username</label>
+                    <input type="text" id="username" 
+                           class="w-full px-5 py-4 text-lg border border-gray-300 rounded-2xl focus:outline-none focus:border-blue-500"
+                           placeholder="s1234567" required>
+                </div>
 
-    <label>MoneySKILL Password</label>
-    <input type="password" id="password" placeholder="School26" required>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">MoneySKILL Password</label>
+                    <input type="password" id="password" 
+                           class="w-full px-5 py-4 text-lg border border-gray-300 rounded-2xl focus:outline-none focus:border-blue-500"
+                           placeholder="School26" required>
+                </div>
 
-    <button onclick="generatePersonalizedZip()">📥 Download My Personalized Bot ZIP</button>
+                <button onclick="generatePersonalizedZip()"
+                        class="w-full bg-green-600 hover:bg-green-700 transition-all text-white font-semibold text-xl py-5 rounded-2xl flex items-center justify-center gap-3 shadow-lg">
+                    <i class="fas fa-download"></i>
+                    DOWNLOAD MY PERSONALIZED BOT
+                </button>
+            </div>
 
-    <div id="result" class="result" style="display:none;"></div>
+            <div id="result" class="hidden mt-6 p-6 bg-green-50 border border-green-200 rounded-2xl text-green-800"></div>
 
+            <div class="text-center text-xs text-gray-400 mt-8">
+                🔒 Your bot is locked to your computer only<br>
+                After payment via Cash App • One-click ready
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <script>
         async function generatePersonalizedZip() {
             const username = document.getElementById('username').value.trim();
             const password = document.getElementById('password').value.trim();
 
             if (!username || !password) {
-                alert("Please enter both username and password");
+                alert("Please fill in both username and password");
                 return;
             }
 
             const resultDiv = document.getElementById('result');
-            resultDiv.style.display = 'block';
-            resultDiv.innerHTML = `<strong>⏳ Preparing your bot... (this may take 10-20 seconds)</strong>`;
+            resultDiv.classList.remove('hidden');
+            resultDiv.innerHTML = `
+                <div class="flex items-center gap-3">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <strong>Preparing your personal bot... (10-20 seconds)</strong>
+                </div>
+            `;
 
             try {
-                // 1. Download your base .exe from GitHub
-                const exeResponse = await fetch('https://leifberger2008-stack.github.io/moneyskill-activator/
-raw/main/MoneySkillBot.exe');
+                const exeResponse = await fetch('https://github.com/leifberger2008-stack/moneyskill-activator/releases/download/v1.0/MoneySkillBot.exe');
                 const exeBlob = await exeResponse.blob();
 
-                // 2. Create personalized config
                 const config = {
                     username: username,
                     password: password,
@@ -56,37 +83,31 @@ raw/main/MoneySkillBot.exe');
                     machine_fingerprint: "CLIENT_LOCK"
                 };
 
-                const configStr = JSON.stringify(config, null, 2);
-                const configBlob = new Blob([configStr], { type: 'application/json' });
-
-                // 3. Create ZIP with JSZip
                 const zip = new JSZip();
                 zip.file("MoneySkillBot.exe", exeBlob);
-                zip.file("config.lic", configBlob);
-                zip.file("README.txt", "1. Extract this zip\n2. Double-click MoneySkillBot.exe\n\nYour bot is locked to this computer only.");
+                zip.file("config.lic", JSON.stringify(config, null, 2));
+                zip.file("README.txt", "✅ Just double-click MoneySkillBot.exe\n\nYour bot is locked to this computer only.");
 
-                // 4. Generate and download
                 const zipBlob = await zip.generateAsync({ type: "blob" });
                 const url = URL.createObjectURL(zipBlob);
 
                 const a = document.createElement('a');
                 a.href = url;
                 a.download = "My_MoneySkillBot.zip";
-                document.body.appendChild(a);
                 a.click();
-                document.body.removeChild(a);
                 URL.revokeObjectURL(url);
 
                 resultDiv.innerHTML = `
-                    <strong>✅ Download started!</strong><br><br>
-                    Your personalized bot ZIP is downloading.<br>
-                    Just unzip it and double-click <strong>MoneySkillBot.exe</strong>.<br><br>
-                    The bot is locked to your computer — it won’t work if shared.
+                    <div class="text-center">
+                        <i class="fas fa-check-circle text-5xl text-green-500 mb-4"></i>
+                        <strong class="text-2xl block">✅ Your bot is downloading!</strong>
+                        <p class="mt-2">Unzip the file and double-click <span class="font-mono font-bold">MoneySkillBot.exe</span></p>
+                        <p class="text-sm mt-4 text-green-600">Locked to your computer • Cannot be shared</p>
+                    </div>
                 `;
 
             } catch (err) {
-                resultDiv.innerHTML = `❌ Something went wrong. Make sure the .exe is uploaded to the repo.`;
-                console.error(err);
+                resultDiv.innerHTML = `<span class="text-red-600">❌ Error: Make sure you uploaded MoneySkillBot.exe to the v1.0 release.</span>`;
             }
         }
     </script>
