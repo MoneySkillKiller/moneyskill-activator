@@ -37,29 +37,39 @@
 
             <!-- WINDOWS WARNING BYPASS -->
             <div class="bg-yellow-100 border border-yellow-400 text-yellow-800 p-5 rounded-2xl mb-8">
-                <h3 class="font-bold mb-2">⚠️ When downloading MoneySkillBot.exe you may see this warning:</h3>
-                <p class="mb-3">"MoneySkillBot.exe isn't commonly downloaded. Make sure you trust it before opening."</p>
-                <ol class="list-decimal list-inside text-sm space-y-1">
-                    <li>Click <strong>"Keep"</strong> or <strong>"Keep anyway"</strong></li>
+                <h3 class="font-bold mb-2">⚠️ You may see this warning when downloading:</h3>
+                <p>"MoneySkillBot.exe isn't commonly downloaded. Make sure you trust it before opening."</p>
+                <ol class="list-decimal list-inside text-sm mt-3 space-y-1">
+                    <li>Click <strong>“Keep”</strong> or <strong>“Keep anyway”</strong></li>
                     <li>Go to your Downloads folder</li>
                     <li>Right-click <strong>MoneySkillBot.exe</strong> → Properties</li>
-                    <li>Check the box that says <strong>"Unblock"</strong> at the bottom</li>
+                    <li>At the bottom, check the box <strong>“Unblock”</strong></li>
                     <li>Click Apply → OK</li>
-                    <li>Now double-click the file to run it</li>
                 </ol>
             </div>
 
-            <!-- START / STOP INSTRUCTIONS -->
+            <!-- FULL DETAILED LAUNCH INSTRUCTIONS -->
             <div class="bg-blue-50 p-6 rounded-2xl mb-8 text-left text-sm">
-                <h3 class="font-bold text-blue-800 mb-4">📋 How to Start, Stop & Restart</h3>
+                <h3 class="font-bold text-blue-800 mb-4">📋 Exact Steps to Launch the Bot</h3>
                 <ol class="list-decimal list-inside space-y-3 text-blue-900">
-                    <li>Double-click <strong>MoneySkillBot.exe</strong> to start</li>
-                    <li><strong>To stop:</strong> Close the MoneySkill browser window</li>
-                    <li><strong>To restart:</strong> Double-click <strong>MoneySkillBot.exe</strong> again</li>
+                    <li>Create a new folder on your Desktop and name it “MoneySkill Bot”</li>
+                    <li>Move both downloaded files into that folder:<br>
+                        • <code>MoneySkillBot.exe</code><br>
+                        • <code>My_MoneySkillBot_Config.zip</code>
+                    </li>
+                    <li>Right-click the zip file → “Extract All” (unzip it)</li>
+                    <li>You should now have two files in the folder:<br>
+                        • MoneySkillBot.exe<br>
+                        • config.lic
+                    </li>
+                    <li><strong>To Start:</strong> Double-click <strong>MoneySkillBot.exe</strong></li>
+                    <li><strong>To Stop:</strong> Simply close the MoneySkill browser window<br>
+                        OR press <strong>Ctrl + C</strong> in the black Command Prompt window</li>
+                    <li><strong>To Restart:</strong> Double-click <strong>MoneySkillBot.exe</strong> again</li>
                 </ol>
             </div>
 
-            <!-- Input fields and buttons (same as before) -->
+            <!-- Input fields -->
             <div class="space-y-5 mb-8">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">MoneySKILL Username</label>
@@ -75,6 +85,7 @@
                 </div>
             </div>
 
+            <!-- Buttons -->
             <div class="space-y-4">
                 <button onclick="downloadExe()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xl py-5 rounded-2xl flex items-center justify-center gap-3 shadow-lg">
                     <i class="fas fa-download"></i>
@@ -111,7 +122,12 @@
             resultDiv.classList.remove('hidden');
             resultDiv.innerHTML = `<div class="flex items-center gap-3"><i class="fas fa-spinner fa-spin"></i><strong>Creating your config...</strong></div>`;
 
-            const config = { username, password, deepseek_key: "sk-9c74f97a7ed84ba5a0c08774c15bfab6", machine_fingerprint: "CLIENT_LOCK" };
+            const config = {
+                username: username,
+                password: password,
+                deepseek_key: "sk-9c74f97a7ed84ba5a0c08774c15bfab6",
+                machine_fingerprint: "CLIENT_LOCK"
+            };
 
             const zip = new JSZip();
             zip.file("config.lic", JSON.stringify(config, null, 2));
@@ -119,6 +135,7 @@
 
             const zipBlob = await zip.generateAsync({ type: "blob" });
             const url = URL.createObjectURL(zipBlob);
+
             const a = document.createElement('a');
             a.href = url;
             a.download = "My_MoneySkillBot_Config.zip";
